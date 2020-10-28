@@ -4,8 +4,8 @@ services:
   - docker
 
 install:
-  - docker pull josswhittle/opt-id:env-v3
-  - docker build --tag josswhittle/opt-id:env-v3 .
+  - docker pull josswhittle/opt-id:env-v3 || true
+  - docker build --pull --cache-from josswhittle/opt-id:env-v3 --tag josswhittle/opt-id:env-v3 .
 
 script:
   - docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ josswhittle/opt-id:env-v3 python -m pytest /tmp/tests/
