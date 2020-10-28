@@ -9,9 +9,6 @@ services:
 before_install:
   - sudo apt-get update
 
-install:
-  - docker pull josswhittle/opt-id:env-v3
-
 script:
-  - docker run josswhittle/opt-id:env-v3 python -m pytest tests/*
-  
+  - python -m pytest tests/*
+
