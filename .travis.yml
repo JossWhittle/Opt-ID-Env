@@ -1,13 +1,7 @@
 language: python
 
-python:
-  - "3.8"
-
 services:
   - docker
-
-before_install:
-  - sudo apt-get update
 
 install:
   - docker pull josswhittle/opt-id:env-v3
