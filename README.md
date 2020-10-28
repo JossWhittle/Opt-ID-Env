@@ -7,6 +7,11 @@ Uses Travis CI to build Docker images for the environments needed to the Opt-ID 
 Docker image pushed to `josswhittle/opt-id:env-v3` (see: https://hub.docker.com/r/josswhittle/opt-id/tags).
 
 ```
+# On Travis CI this repo has three ENV vars configured:
+DOCKER_USERNAME = "josswhittle"
+DOCKER_PASSWORD = "secret"
+DOCKER_REPO     = "opt-id:env-v3"
+
 # Populate the Docker build cache on the Travis VM using the current version of the Docker image (if one exists)
 docker pull $DOCKER_USERNAME/$DOCKER_REPO || true
 
