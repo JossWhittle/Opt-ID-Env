@@ -2,9 +2,22 @@
 
 [![Build Status](https://travis-ci.com/JossWhittle/Opt-ID-Env.svg?branch=main)](https://travis-ci.com/JossWhittle/Opt-ID-Env)
 
-Uses Travis CI to build Docker images for the environments needed to the Opt-ID software developed by the Rosalind Franklin Institute and Diamond Light Source. https://github.com/DiamondLightSource/Opt-ID
+Uses Travis CI to build Docker images for the environments needed by the Opt-ID software developed by the Rosalind Franklin Institute and Diamond Light Source. https://github.com/DiamondLightSource/Opt-ID
 
 Docker image pushed to `josswhittle/opt-id:env-v3` (see: https://hub.docker.com/r/josswhittle/opt-id/tags).
+
+## Docker Image
+
+Image is based on Ubuntu 20.04 Focal with the following installed
+
+```
+apt-get : build-essential git libopenmpi-dev openmpi-bin python3 python3-pip
+
+pip     : mock pytest pytest-cov PyYAML coveralls coverage 
+          numpy scipy h5py pandas matplotlib mpi4py jax jaxlib
+```
+
+## Travis CI Script
 
 On Travis CI this repo has three ENV vars configured
 
@@ -29,23 +42,28 @@ docker build --pull --cache-from $DOCKER_USERNAME/$DOCKER_REPO --tag $DOCKER_USE
 Start a container running the image that will keep running until we stop it...
 
   - `-itd` 
- 	to run the container in interactive mode, and detached so that it keeps running after this line
+ 	
+ 	Run the container in interactive mode, and detached so that it keeps running after this line.
 
   - `--name env` 
- 	We can refer to this running container by the name "env"
+ 	
+ 	We can refer to this running container by the name "env".
 
   - `--env-file <(env | grep TRAVIS)`
-	Grab all environment varaibles from the host starting with "TRAVIS" and forward them into the container to allow coveralls to report properly
+	
+	Grab all environment varaibles from the host starting with "TRAVIS" and forward them into the container to allow coveralls to report properly.
 
   - `-v $(pwd):/tmp/repo/`
-	Mount the current directory on the host (git repo root) to the directory /tmp/repo/ in the container
+	
+	Mount the current directory on the host (git repo root) to the directory /tmp/repo/ in the container.
  
   - `-w /tmp/repo/`
- 	Set the current working directory inside the container to the root of the git repo
+ 	
+ 	Set the current working directory inside the container to the root of the git repo.
 
   - `$DOCKER_USERNAME/$DOCKER_REPO`
-	The docker image to run
-
+	
+	The docker image to run.
 ```
 docker run -itd --name env --env-file <(env | grep TRAVIS) -v $(pwd):/tmp/repo/ -w /tmp/repo/ $DOCKER_USERNAME/$DOCKER_REPO 
 ```
