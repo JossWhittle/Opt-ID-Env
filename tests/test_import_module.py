@@ -19,7 +19,7 @@ class RadiaSmokeTest(unittest.TestCase):
 
     def test_radia_version_string(self):
         
-        self.assertEqual(type(rad.UtiVer()), str)
+        self.assertEqual(type(rad.UtiVer()), float)
 
     def test_radia_simple_magnet(self):
         
