@@ -18,9 +18,35 @@ docker pull $DOCKER_USERNAME/$DOCKER_REPO || true
 # Build the Docker image from the Dockerfile in the root of this repo, respecting the cache if parts are unchanged
 docker build --pull --cache-from $DOCKER_USERNAME/$DOCKER_REPO --tag $DOCKER_USERNAME/$DOCKER_REPO .
 
-# Run the python unit tests in the test directory of this repo using the built Docker image
-# Mounts the test directory of this repo to /tmp/tests directory within the Docker container
-docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ $DOCKER_USERNAME/$DOCKER_REPO python -B -m pytest -p no:cacheprovider /tmp/tests/ 
+# Start a container running the image that will keep running until we stop it...
+#
+# -itd 
+# 	to run the container in interactive mode, and detached so that it keeps running after this line
+#
+# --name 
+# 	env We can refer to this running container by the name "env"
+#
+# --env-file <(env | grep TRAVIS)
+#	Grab all environment varaibles from the host starting with "TRAVIS" and forward them into the container to allow coveralls to report properly
+#
+# -v $(pwd):/tmp/repo/
+#	Mount the current directory on the host (git repo root) to the directory /tmp/repo/ in the container
+# 
+# -w /tmp/repo/
+# 	Set the current working directory inside the container to the root of the git repo
+#
+# $DOCKER_USERNAME/$DOCKER_REPO 
+#	The docker image to run
+#
+docker run -itd --name env --env-file <(env | grep TRAVIS) -v $(pwd):/tmp/repo/ -w /tmp/repo/ $DOCKER_USERNAME/$DOCKER_REPO 
+
+# Run the python unit tests on the git repo
+docker exec env python -m pytest tests/
+
+# Kill the container
+docker stop env
 
 # If the tests pass, then deploy the Docker image to Dockerhub to replace the existing one
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+docker push $DOCKER_USERNAME/$DOCKER_REPO
 ```
