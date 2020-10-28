@@ -4,14 +4,14 @@ services:
   - docker
 
 install:
-  - docker pull "$DOCKER_USERNAME/$DOCKER_REPO" || true
-  - docker build --pull --cache-from "$DOCKER_USERNAME/$DOCKER_REPO" --tag "$DOCKER_USERNAME/$DOCKER_REPO" .
+  - docker pull $DOCKER_USERNAME/$DOCKER_REPO || true
+  - docker build --pull --cache-from $DOCKER_USERNAME/$DOCKER_REPO --tag $DOCKER_USERNAME/$DOCKER_REPO .
 
 script:
-  - docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ "$DOCKER_USERNAME/$DOCKER_REPO" python -B -m pytest -p no:cacheprovider /tmp/tests/ 
+  - docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ $DOCKER_USERNAME/$DOCKER_REPO python -B -m pytest -p no:cacheprovider /tmp/tests/ 
 
 deploy:
   provider: script
-  script: docker_push
+  script: bash docker_push
   on:
     branch: main
