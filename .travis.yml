@@ -8,7 +8,7 @@ install:
   - docker build --pull --cache-from josswhittle/opt-id:env-v3 --tag josswhittle/opt-id:env-v3 .
 
 script:
-  - docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ josswhittle/opt-id:env-v3 python -m pytest /tmp/tests/
+  - docker run --rm -it -v $(pwd)/tests/:/tmp/tests/ josswhittle/opt-id:env-v3 python -B -m pytest -p no:cacheprovider /tmp/tests/ 
 
 deploy:
   provider: script
