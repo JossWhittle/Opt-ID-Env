@@ -35,6 +35,5 @@ RUN mkdir /tmp/radia && \
     make -C /tmp/radia/cpp/py && \
     mkdir -p /usr/local/radia && \
     cp /tmp/radia/env/radia_python/radia.so  /usr/local/radia/radia.so  && \
-    cp /tmp/radia/env/radia_python/radia.pyd /usr/local/radia/radia.pyd && \
     rm -rf /tmp/radia
 ENV PYTHONPATH="/usr/local/radia:${PYTHONPATH}"
