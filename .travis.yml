@@ -1,14 +1,17 @@
+language: python
+
+python:
+  - "3.8"
+
 services:
   - docker
+
+before_install:
+  - sudo apt-get update
 
 install:
   - docker pull josswhittle/opt-id:env-v3
 
 script:
   - docker run josswhittle/opt-id:env-v3 python -m pytest tests/*
-
-# deploy:
-#   provider: script
-#   script: bash docker_push
-#   on:
-#     branch: master
+  
