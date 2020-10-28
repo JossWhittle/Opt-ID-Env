@@ -4,6 +4,7 @@ services:
   - docker
 
 install:
+  - docker pull josswhittle/opt-id:env-v3
   - docker build --tag josswhittle/opt-id:env-v3 .
 
 script:
