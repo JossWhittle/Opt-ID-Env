@@ -1,6 +1,6 @@
 # Opt-ID-Env
 
-[![Build Status](https://travis-ci.com/JossWhittle/Opt-ID-Env.svg?branch=main)](https://travis-ci.com/JossWhittle/Opt-ID-Env)
+[![Build Status](https://travis-ci.com/JossWhittle/Opt-ID-Env.svg?branch=main)](https://travis-ci.com/JossWhittle/Opt-ID-Env) [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/4925)
 
 Uses Travis CI to build Docker images for the environments needed by the Opt-ID software developed by the Rosalind Franklin Institute and Diamond Light Source. https://github.com/DiamondLightSource/Opt-ID
 
@@ -15,6 +15,8 @@ apt-get : build-essential git libopenmpi-dev openmpi-bin python3 python3-pip
 
 pip     : mock pytest pytest-cov PyYAML coveralls coverage 
           numpy scipy h5py pandas matplotlib mpi4py jax jaxlib
+
+manual  : Radia (https://github.com/ochubar/Radia)
 ```
 
 ## Travis CI Script
