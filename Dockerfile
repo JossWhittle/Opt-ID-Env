@@ -17,7 +17,8 @@ FROM ubuntu:focal
 # Install packages and register python3 as python (required for radia install which calls "python" blindly)
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update -y && apt-get install -y dialog apt-utils && \
-    apt-get install -y build-essential git wget libfabric-dev libfabric1 python3 python3-pip && \
+    apt-get install -y build-essential git wget python3 python3-pip \
+                       libfabric-dev libfabric1 libibverbs-dev libibverbs1 && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
     apt-get autoremove -y --purge && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -29,6 +30,8 @@ RUN mkdir -p /tmp/openmpi && \
 WORKDIR /tmp/openmpi/openmpi-4.0.0/build
 RUN ../configure --prefix=/usr/local \
                  --with-libfabric=/usr/ \
+                 --with-verbs=/usr/ \
+				 --with-verbs-libdir=/usr/lib/x86_64-linux-gnu/ \
                  --enable-mpi1-compatibility \
                  --disable-mpi-fortran && \
     make && \
