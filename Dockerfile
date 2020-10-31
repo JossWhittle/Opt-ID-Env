@@ -15,7 +15,6 @@
 FROM ubuntu:focal
 
 # Install packages and register python3 as python (required for radia install which calls "python" blindly)
-# libopenmpi-dev openmpi-bin
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update -y && apt-get install -y dialog apt-utils && \
     apt-get install -y build-essential git wget libfabric-dev libfabric1 python3 python3-pip && \
@@ -38,14 +37,14 @@ RUN ../configure --prefix=/usr/local \
     ldconfig
 WORKDIR /
 
-# # Install python packages
+# Install python packages
 RUN env MPICC=/usr/local/bin/mpicc pip3 install --no-cache-dir --upgrade \
         mock pytest pytest-cov PyYAML coveralls coverage \
         numpy scipy h5py pandas matplotlib mpi4py jax jaxlib && \
     rm -rf /tmp/* && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -rf '{}' +
 
-# # Build radia (only need radia.so on the the PYTHONPATH)
+# Build radia (only need radia.so on the the PYTHONPATH)
 RUN mkdir -p /tmp/radia && \
     git clone https://github.com/ochubar/Radia.git /tmp/radia && \
     make -C /tmp/radia/cpp/gcc all && \
