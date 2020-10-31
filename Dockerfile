@@ -14,22 +14,39 @@
 
 FROM ubuntu:focal
 
-# Find latest packages
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    apt-get update -y && apt-get install -y dialog apt-utils
-
 # Install packages and register python3 as python (required for radia install which calls "python" blindly)
-RUN apt-get install -y build-essential git libopenmpi-dev openmpi-bin python3 python3-pip && \
+# libopenmpi-dev openmpi-bin
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    apt-get update -y && apt-get install -y dialog apt-utils && \
+    apt-get install -y build-essential git wget libfabric-dev libfabric1 python3 python3-pip && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
     apt-get autoremove -y --purge && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install python packages
-RUN pip3 install --upgrade mock pytest pytest-cov PyYAML coveralls coverage numpy scipy h5py pandas matplotlib mpi4py jax jaxlib && \
+# Build specific OpenMPI with extensions
+RUN mkdir -p /tmp/openmpi && \
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.0.tar.gz -P /tmp/openmpi && \
+    tar xf /tmp/openmpi/openmpi-4.0.0.tar.gz -C /tmp/openmpi
+WORKDIR /tmp/openmpi/openmpi-4.0.0/build
+RUN ../configure --prefix=/usr/local \
+                 --with-libfabric=/usr/ \
+                 --enable-mpi1-compatibility \
+                 --disable-mpi-fortran && \
+    make && \
+    make install && \
+    rm -rf /tmp/openmpi && \
+    ldconfig
+WORKDIR /
+
+# # Install python packages
+RUN env MPICC=/usr/local/bin/mpicc pip3 install --no-cache-dir --upgrade \
+        mock pytest pytest-cov PyYAML coveralls coverage \
+        numpy scipy h5py pandas matplotlib mpi4py jax jaxlib && \
+    rm -rf /tmp/* && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -rf '{}' +
 
-# Build radia (only need radia.so and radia.pyd on the the PYTHONPATH)
-RUN mkdir /tmp/radia && \
+# # Build radia (only need radia.so on the the PYTHONPATH)
+RUN mkdir -p /tmp/radia && \
     git clone https://github.com/ochubar/Radia.git /tmp/radia && \
     make -C /tmp/radia/cpp/gcc all && \
     make -C /tmp/radia/cpp/py && \
