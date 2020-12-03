@@ -17,9 +17,9 @@ name: CI - Build Docker Image and Execute Tests
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ main, development ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ main, development ]
 
   workflow_dispatch:
 
@@ -31,8 +31,8 @@ jobs:
     steps:
 
       # Configure environment variable depending on which branch we are running on
-      - name: Set env to master
-        if: endsWith(github.ref, '/master')
+      - name: Set env to main
+        if: endsWith(github.ref, '/main')
         run: echo "DOCKER_REPO=opt-id:env-v3" >> $GITHUB_ENV
       - name: Set env to development
         if: endsWith(github.ref, '/development')
