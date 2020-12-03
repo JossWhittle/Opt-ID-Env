@@ -38,7 +38,7 @@ WORKDIR /
 
 # Install python packages
 RUN env MPICC=/usr/local/bin/mpicc pip3 install --no-cache-dir --upgrade \
-        mock pytest pytest-cov PyYAML coveralls coverage \
+        mock pytest pytest-cov PyYAML coverage \
         numpy scipy h5py pandas matplotlib mpi4py jax jaxlib && \
     rm -rf /tmp/* && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -rf '{}' +
