@@ -38,7 +38,7 @@ jobs:
         if: endsWith(github.ref, '/development')
         run: echo "DOCKER_REPO=opt-id:env-v3-dev" >> $GITHUB_ENV
 
-      # Checks-out Kompressor repository under $(pwd)
+      # Checks-out repository under $(pwd)
       - uses: actions/checkout@v2
 
       # Build Docker image and execute tests, push image to Dockerhub on success
