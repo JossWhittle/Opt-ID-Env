@@ -33,23 +33,23 @@ jobs:
       # Configure environment variable depending on which branch we are running on
       - name: Set env to main
         if: endsWith(github.ref, '/main')
-        run: echo "DOCKER_REPO=opt-id:env-v3" >> $GITHUB_ENV
+        run: echo "DOCKER_REPO_TAG=opt-id:env-v3" >> $GITHUB_ENV
       - name: Set env to development
         if: endsWith(github.ref, '/development')
-        run: echo "DOCKER_REPO=opt-id:env-v3-dev" >> $GITHUB_ENV
+        run: echo "DOCKER_REPO_TAG=opt-id:env-v3-dev" >> $GITHUB_ENV
 
       # Checks-out repository under $(pwd)
       - uses: actions/checkout@v2
 
       # Build Docker image and execute tests, push image to Dockerhub on success
       - name: Pull existing Docker image
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO || true
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO_TAG || true
 
       - name: Build Docker image
-        run: docker build --pull --cache-from ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO --tag ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO .
+        run: docker build --pull --cache-from ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO_TAG --tag ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO_TAG .
 
       - name: Start container
-        run: docker run -itd --name env -v $(pwd):/tmp/repo/ -w /tmp/repo/ ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO
+        run: docker run -itd --name env -v $(pwd):/tmp/repo/ -w /tmp/repo/ ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO_TAG
 
       - name: Execute tests within container
         run: |
@@ -68,4 +68,4 @@ jobs:
       - name: Push Docker image to Dockerhub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO
+          docker push ${{ secrets.DOCKER_USERNAME }}/$DOCKER_REPO_TAG
